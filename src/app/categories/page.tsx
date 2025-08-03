@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { fetchCategories } from "@/services/CategoryService";
 import { ICategory } from "@/interfaces/ICategory";
+import { BASE_URL } from "@/utils/constants";
 
 export default function CategoriesPage() {
     const [categories, setCategories] = useState<ICategory[]>([]);
@@ -97,7 +98,7 @@ export default function CategoriesPage() {
                                     <div className="aspect-video bg-gradient-to-br from-purple-600/30 to-pink-600/30 relative overflow-hidden">
                                         {category.thumbnail ? (
                                             <Image 
-                                                src={category.thumbnail} 
+                                                src={`${BASE_URL}${category.thumbnail}`} 
                                                 alt={category.name}
                                                 fill
                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

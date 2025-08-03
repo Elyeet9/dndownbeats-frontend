@@ -72,7 +72,7 @@ export default function CategoryDetailPage() {
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600/30 to-pink-600/30">
                     {category.thumbnail && (
                         <Image
-                            src={category.thumbnail}
+                            src={`${BASE_URL}${category.thumbnail}`}
                             alt={category.name}
                             fill
                             sizes="100vw"
@@ -136,7 +136,7 @@ export default function CategoryDetailPage() {
                                         <div className="aspect-video bg-gradient-to-br from-purple-600/30 to-pink-600/30 relative overflow-hidden">
                                             {subcategory.thumbnail ? (
                                                 <Image 
-                                                    src={subcategory.thumbnail} 
+                                                    src={`${BASE_URL}${subcategory.thumbnail}`} 
                                                     alt={subcategory.name}
                                                     fill
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -185,47 +185,60 @@ export default function CategoryDetailPage() {
                     {category.soundtracks && category.soundtracks.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {category.soundtracks.map((soundtrack) => (
-                                <div 
-                                    key={soundtrack.id} 
-                                    className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:border-purple-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20"
+                                <a
+                                    key={soundtrack.id}
+                                    href={soundtrack.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group cursor-pointer"
                                 >
-                                    {/* Thumbnail */}
-                                    <div className="aspect-video bg-gradient-to-br from-amber-600/30 to-orange-600/30 relative overflow-hidden">
-                                        {soundtrack.thumbnail ? (
-                                            <Image 
-                                                src={`${BASE_URL}${soundtrack.thumbnail}`} 
-                                                alt={soundtrack.title}
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                className="object-cover"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center">
-                                                <div className="text-4xl text-white/70">🎼</div>
+                                    <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:border-purple-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 transform hover:scale-105">
+                                        {/* Thumbnail */}
+                                        <div className="aspect-video bg-gradient-to-br from-amber-600/30 to-orange-600/30 relative overflow-hidden">
+                                            {soundtrack.thumbnail ? (
+                                                <Image 
+                                                    src={`${BASE_URL}${soundtrack.thumbnail}`} 
+                                                    alt={soundtrack.title}
+                                                    fill
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center">
+                                                    <div className="text-4xl text-white/70">🎼</div>
+                                                </div>
+                                            )}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                            
+                                            {/* Play Button Overlay */}
+                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <div className="bg-white/20 backdrop-blur-sm rounded-full p-4 group-hover:bg-white/30 transition-colors">
+                                                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M8 5v14l11-7z"/>
+                                                    </svg>
+                                                </div>
                                             </div>
-                                        )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                        </div>
                                         
-                                        {/* Play Button Overlay */}
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                            <button className="bg-white/20 backdrop-blur-sm rounded-full p-4 hover:bg-white/30 transition-colors">
-                                                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M8 5v14l11-7z"/>
+                                        {/* Content */}
+                                        <div className="p-6">
+                                            <h3 className="font-display text-xl font-semibold text-white mb-3 group-hover:text-purple-300 transition-colors">
+                                                {soundtrack.title}
+                                            </h3>
+                                            <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                                                {soundtrack.description}
+                                            </p>
+                                            
+                                            {/* External Link Indicator */}
+                                            <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                                                <span className="text-sm text-amber-400 font-medium">Listen</span>
+                                                <svg className="w-5 h-5 text-amber-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                                 </svg>
-                                            </button>
+                                            </div>
                                         </div>
                                     </div>
-                                    
-                                    {/* Content */}
-                                    <div className="p-6">
-                                        <h3 className="font-display text-xl font-semibold text-white mb-3">
-                                            {soundtrack.title}
-                                        </h3>
-                                        <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                                            {soundtrack.description}
-                                        </p>
-                                    </div>
-                                </div>
+                                </a>
                             ))}
                         </div>
                     ) : (
