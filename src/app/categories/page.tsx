@@ -112,7 +112,7 @@ export default function CategoriesPage() {
                                 href={`/categories/${category.id}`}
                                 className="group"
                             >
-                                <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:border-purple-400/50 transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20">
+                                <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:border-purple-400/50 transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 h-full flex flex-col">
                                     {/* Thumbnail */}
                                     <div className="aspect-video bg-gradient-to-br from-purple-600/30 to-pink-600/30 relative overflow-hidden">
                                         {category.thumbnail ? (
@@ -133,11 +133,11 @@ export default function CategoriesPage() {
                                     </div>
                                     
                                     {/* Content */}
-                                    <div className="p-6">
+                                    <div className="p-6 flex-1 flex flex-col">
                                         <h3 className="font-display text-xl font-semibold text-white mb-3 group-hover:text-purple-300 transition-colors">
                                             {category.name}
                                         </h3>
-                                        <p className="text-gray-400 text-sm leading-relaxed line-clamp-3">
+                                        <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 flex-1">
                                             {category.description}
                                         </p>
                                         
@@ -158,7 +158,7 @@ export default function CategoriesPage() {
                             onClick={() => setShowCreateModal(true)}
                             className="group cursor-pointer"
                         >
-                            <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 border-dashed hover:border-amber-400/50 transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20 h-full">
+                            <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 border-dashed hover:border-amber-400/50 transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20 h-full flex flex-col">
                                 {/* Plus Icon Area */}
                                 <div className="aspect-video bg-gradient-to-br from-amber-600/20 to-orange-600/20 relative overflow-hidden flex items-center justify-center rounded-t-xl">
                                     <div className="text-6xl text-amber-400/70 group-hover:text-amber-400 group-hover:scale-110 transition-all duration-300">
@@ -169,11 +169,11 @@ export default function CategoriesPage() {
                                 </div>
                                 
                                 {/* Content */}
-                                <div className="p-6">
+                                <div className="p-6 flex-1 flex flex-col">
                                     <h3 className="font-display text-xl font-semibold text-white mb-3 group-hover:text-amber-300 transition-colors">
                                         Create Category
                                     </h3>
-                                    <p className="text-gray-400 text-sm leading-relaxed">
+                                    <p className="text-gray-400 text-sm leading-relaxed flex-1">
                                         Add a new category to organize your soundtracks and create the perfect atmosphere for your campaigns.
                                     </p>
                                     
