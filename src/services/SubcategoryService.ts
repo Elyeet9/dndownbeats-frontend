@@ -43,3 +43,56 @@ export const createSubcategory = async (subcategoryData: ICreateSubcategory): Pr
 
     return response.json();
 };
+
+export const deleteSubcategoryCounts = async (subcategoryId: string): Promise<{subcategories_count: number, soundtracks_count: number}> => {
+    const response = await fetch(`${API_URL}/delete_subcategory/${subcategoryId}/`, {
+        method: 'GET'
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to get subcategory deletion counts');
+    }
+
+    return response.json();
+};
+
+export const deleteSubcategory = async (subcategoryId: string): Promise<null> => {
+    const response = await fetch(`${API_URL}/delete_subcategory/${subcategoryId}/`, {
+        method: 'DELETE'
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to delete subcategory');
+    }
+
+    return response.json();
+};
+
+export const updateSubcategory = async (subcategoryId: string, data: ICreateSubcategory): Promise<null> => {
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('description', data.description);
+    formData.append('category', data.category);
+    
+    if (data.subcategory) {
+        formData.append('subcategory', data.subcategory);
+    }
+    
+    if (data.thumbnail) {
+        formData.append('thumbnail', data.thumbnail);
+    }
+
+    const response = await fetch(`${API_URL}/subcategory/${subcategoryId}/`, {
+        method: 'PUT',
+        body: formData
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to update subcategory');
+    }
+
+    return response.json();
+};

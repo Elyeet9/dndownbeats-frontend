@@ -42,3 +42,50 @@ export const createCategory = async (data: ICreateCategory): Promise<null> => {
 
     return response.json();
 }
+
+export const deleteCategoryCounts = async (categoryId: string): Promise<{subcategories_count: number, soundtracks_count: number}> => {
+    const response = await fetch(`${API_URL}/delete_category/${categoryId}/`, {
+        method: 'GET'
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to delete category counts');
+    }
+
+    return response.json();
+}
+
+export const deleteCategory = async (categoryId: string): Promise<null> => {
+    const response = await fetch(`${API_URL}/delete_category/${categoryId}/`, {
+        method: 'DELETE'
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to delete category');
+    }
+
+    return response.json();
+}
+
+export const updateCategory = async (categoryId: string, data: ICreateCategory): Promise<null> => {
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('description', data.description);
+    if (data.thumbnail) {
+        formData.append('thumbnail', data.thumbnail);
+    }
+
+    const response = await fetch(`${API_URL}/category/${categoryId}/`, {
+        method: 'PUT',
+        body: formData
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to update category');
+    }
+
+    return response.json();
+}

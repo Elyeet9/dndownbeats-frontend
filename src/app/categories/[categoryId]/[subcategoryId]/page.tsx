@@ -11,6 +11,10 @@ import { ICreateSubcategory } from "@/interfaces/ICreateSubcategory";
 import { ICreateSoundtrack } from "@/interfaces/ICreateSoundtrack";
 import { useParams } from "next/navigation";
 import { BASE_URL } from "@/utils/constants";
+import SubcategoryCard from "@/components/SubcategoryCard";
+import SoundtrackCard from "@/components/SoundtrackCard";
+import CreateSubcategoryCard from "@/components/CreateSubcategoryCard";
+import CreateSoundtrackCard from "@/components/CreateSoundtrackCard";
 
 export default function SubcategoryPage() {
     // Get category id from URL parameters
@@ -88,21 +92,37 @@ export default function SubcategoryPage() {
         }
     };
 
-    useEffect(() => {
-        const getSubcategory = async () => {
-            try {
-                setLoading(true);
-                const data = await fetchSubcategory(subcategoryId as string);
-                setSubcategory(data);
-            } catch (err) {
-                setError('Failed to load subcategory');
-                console.error('Error fetching subcategory:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const handleDeleteSubcategory = () => {
+        getSubcategory(subcategoryId as string);
+    };
 
-        getSubcategory();
+    const handleUpdateSubcategory = () => {
+        getSubcategory(subcategoryId as string);
+    };
+
+    const handleDeleteSoundtrack = () => {
+        getSubcategory(subcategoryId as string);
+    };
+
+    const getSubcategory = async (id : string) => {
+        try {
+            setLoading(true);
+            const data = await fetchSubcategory(id as string);
+            setSubcategory(data);
+        } catch (err) {
+            setError('Failed to load subcategory');
+            console.error('Error fetching subcategory:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleUpdateSoundtrack = () => {
+        getSubcategory(subcategoryId as string);
+    };
+
+    useEffect(() => {
+        getSubcategory(subcategoryId as string);
     }, [subcategoryId]);
 
     if (loading) {
@@ -176,15 +196,15 @@ export default function SubcategoryPage() {
                                 </Link>
                                 <span className="text-gray-500">/</span>
                                 {subcategory.subcategory && (
-                                    <Link
-                                        href={`/categories/${categoryId}/${subcategory.subcategory}`}
-                                        className="text-purple-400 hover:text-purple-300 transition-colors"
-                                    >
-                                        {subcategory.parent_name}
-                                    </Link>
-                                )}
-                                {subcategory.subcategory && (
-                                    <span className="text-gray-500">/</span>
+                                    <>
+                                        <Link
+                                            href={`/categories/${categoryId}/${subcategory.subcategory}`}
+                                            className="text-purple-400 hover:text-purple-300 transition-colors"
+                                        >
+                                            {subcategory.parent_name}
+                                        </Link>
+                                        <span className="text-gray-500">/</span>
+                                    </>
                                 )}
                                 <span className="text-gray-300">{subcategory.name}</span>
                             </div>
@@ -214,84 +234,18 @@ export default function SubcategoryPage() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {subcategory.subcategories && subcategory.subcategories.map((nestedSubcategory) => (
-                            <Link 
-                                key={nestedSubcategory.id} 
-                                href={`/categories/${categoryId}/${nestedSubcategory.id}`}
-                                className="group"
-                            >
-                                <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:border-purple-400/50 transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 h-full flex flex-col">
-                                    {/* Thumbnail */}
-                                    <div className="aspect-video bg-gradient-to-br from-purple-600/30 to-pink-600/30 relative overflow-hidden">
-                                        {nestedSubcategory.thumbnail ? (
-                                            <Image 
-                                                src={`${BASE_URL}${nestedSubcategory.thumbnail}`} 
-                                                alt={nestedSubcategory.name}
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                className="object-cover group-hover:scale-110 transition-transform duration-300"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center">
-                                                <div className="text-4xl text-white/70">�</div>
-                                            </div>
-                                        )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                    </div>
-                                    
-                                    {/* Content */}
-                                    <div className="p-6 flex-1 flex flex-col">
-                                        <h3 className="font-display text-xl font-semibold text-white mb-3 group-hover:text-purple-300 transition-colors">
-                                            {nestedSubcategory.name}
-                                        </h3>
-                                        <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 flex-1">
-                                            {nestedSubcategory.description}
-                                        </p>
-                                        
-                                        <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                                            <span className="text-sm text-purple-400 font-medium">Explore</span>
-                                            <svg className="w-5 h-5 text-purple-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
+                            <SubcategoryCard
+                                key={nestedSubcategory.id}
+                                subcategory={nestedSubcategory}
+                                baseUrl={BASE_URL}
+                                categoryId={categoryId as string}
+                                onDelete={handleDeleteSubcategory}
+                                onUpdate={handleUpdateSubcategory}
+                            />
                         ))}
                         
                         {/* Create Subcategory Card */}
-                        <button
-                            onClick={() => setShowCreateModal(true)}
-                            className="group cursor-pointer"
-                        >
-                            <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 border-dashed hover:border-amber-400/50 transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20 h-full flex flex-col">
-                                {/* Plus Icon Area */}
-                                <div className="aspect-video bg-gradient-to-br from-amber-600/20 to-orange-600/20 relative overflow-hidden flex items-center justify-center rounded-t-xl">
-                                    <div className="text-6xl text-amber-400/70 group-hover:text-amber-400 group-hover:scale-110 transition-all duration-300">
-                                        +
-                                    </div>
-                                    {/* Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-t-xl"></div>
-                                </div>
-                                
-                                {/* Content */}
-                                <div className="p-6 flex-1 flex flex-col">
-                                    <h3 className="font-display text-xl font-semibold text-white mb-3 group-hover:text-amber-300 transition-colors">
-                                        Create Subcategory
-                                    </h3>
-                                    <p className="text-gray-400 text-sm leading-relaxed flex-1">
-                                        Add a new subcategory to organize your soundtracks in more detail.
-                                    </p>
-                                    
-                                    {/* Create Arrow */}
-                                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                                        <span className="text-sm text-amber-400 font-medium">Create</span>
-                                        <svg className="w-5 h-5 text-amber-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                        </button>
+                        <CreateSubcategoryCard onClick={() => setShowCreateModal(true)} />
                     </div>
                 </section>
 
@@ -303,108 +257,36 @@ export default function SubcategoryPage() {
                             Soundtracks
                         </h2>
                     </div>
-                    
-                    
+                                        
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {subcategory.soundtracks && subcategory.soundtracks.map((soundtrack) => (
-                            <a
+                            <SoundtrackCard
                                 key={soundtrack.id}
-                                href={soundtrack.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group cursor-pointer"
-                            >
-                                <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:border-purple-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 transform hover:scale-105 h-full flex flex-col">
-                                    {/* Thumbnail */}
-                                    <div className="aspect-video bg-gradient-to-br from-amber-600/30 to-orange-600/30 relative overflow-hidden">
-                                        {soundtrack.thumbnail ? (
-                                            <Image 
-                                                src={`${BASE_URL}${soundtrack.thumbnail}`} 
-                                                alt={soundtrack.title}
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                className="object-cover group-hover:scale-110 transition-transform duration-300"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center">
-                                                <div className="text-4xl text-white/70">🎼</div>
-                                            </div>
-                                        )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                        
-                                        {/* Play Button Overlay */}
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                            <div className="bg-white/20 backdrop-blur-sm rounded-full p-4 group-hover:bg-white/30 transition-colors">
-                                                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M8 5v14l11-7z"/>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Content */}
-                                    <div className="p-6 flex-1 flex flex-col">
-                                        <h3 className="font-display text-xl font-semibold text-white mb-3 group-hover:text-purple-300 transition-colors">
-                                            {soundtrack.title}
-                                        </h3>
-                                        <p className="text-gray-400 text-sm leading-relaxed mb-4 flex-1">
-                                            {soundtrack.description}
-                                        </p>
-                                        
-                                        {/* External Link Indicator */}
-                                        <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                                            <span className="text-sm text-amber-400 font-medium">Listen</span>
-                                            <svg className="w-5 h-5 text-amber-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
+                                soundtrack={soundtrack}
+                                baseUrl={BASE_URL}
+                                categoryId={categoryId as string}
+                                subcategoryId={subcategoryId as string}
+                                onDelete={handleDeleteSoundtrack}
+                                onUpdate={handleUpdateSoundtrack}
+                            />
                         ))}
                         
                         {/* Create Soundtrack Card */}
-                        <button
-                            onClick={() => setShowCreateSoundtrackModal(true)}
-                            className="group cursor-pointer"
-                        >
-                            <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 border-dashed hover:border-amber-400/50 transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20 h-full flex flex-col">
-                                {/* Plus Icon Area */}
-                                <div className="aspect-video bg-gradient-to-br from-amber-600/20 to-orange-600/20 relative overflow-hidden flex items-center justify-center rounded-t-xl">
-                                    <div className="text-6xl text-amber-400/70 group-hover:text-amber-400 group-hover:scale-110 transition-all duration-300">
-                                        +
-                                    </div>
-                                    {/* Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-t-xl"></div>
-                                </div>
-                                
-                                {/* Content */}
-                                <div className="p-6 flex-1 flex flex-col">
-                                    <h3 className="font-display text-xl font-semibold text-white mb-3 group-hover:text-amber-300 transition-colors">
-                                        Create Soundtrack
-                                    </h3>
-                                    <p className="text-gray-400 text-sm leading-relaxed flex-1">
-                                        Add a new soundtrack to enhance your D&D sessions with perfect atmospheric music.
-                                    </p>
-                                    
-                                    {/* Create Arrow */}
-                                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                                        <span className="text-sm text-amber-400 font-medium">Create</span>
-                                        <svg className="w-5 h-5 text-amber-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                        </button>
+                        <CreateSoundtrackCard onClick={() => setShowCreateSoundtrackModal(true)} />
                     </div>
                 </section>
             </div>
 
             {/* Create Subcategory Modal */}
             {showCreateModal && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-gradient-to-br from-slate-900/95 via-purple-900/95 to-slate-900/95 backdrop-blur-md rounded-xl border border-white/20 max-w-md w-full p-6 shadow-2xl">
+                <div 
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+                    onClick={() => setShowCreateModal(false)}
+                >
+                    <div 
+                        className="bg-gradient-to-br from-slate-900/95 via-purple-900/95 to-slate-900/95 backdrop-blur-md rounded-xl border border-white/20 max-w-md w-full p-6 shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="font-display text-2xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent">Create New Subcategory</h2>
                             <button
@@ -502,8 +384,14 @@ export default function SubcategoryPage() {
 
             {/* Create Soundtrack Modal */}
             {showCreateSoundtrackModal && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-gradient-to-br from-slate-900/95 via-purple-900/95 to-slate-900/95 backdrop-blur-md rounded-xl border border-white/20 max-w-md w-full p-6 shadow-2xl">
+                <div 
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+                    onClick={() => setShowCreateSoundtrackModal(false)}
+                >
+                    <div 
+                        className="bg-gradient-to-br from-slate-900/95 via-purple-900/95 to-slate-900/95 backdrop-blur-md rounded-xl border border-white/20 max-w-md w-full p-6 shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="font-display text-2xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent">Create New Soundtrack</h2>
                             <button
@@ -614,4 +502,4 @@ export default function SubcategoryPage() {
             )}
         </div>
     );
-};
+}

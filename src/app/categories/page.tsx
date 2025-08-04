@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { fetchCategories, createCategory } from "@/services/CategoryService";
 import { ICategory } from "@/interfaces/ICategory";
 import { ICreateCategory } from "@/interfaces/ICreateCategory";
 import { BASE_URL } from "@/utils/constants";
+import CategoryCard from "@/components/CategoryCard";
+import CreateCategoryCard from "@/components/CreateCategoryCard";
 
 export default function CategoriesPage() {
     const [categories, setCategories] = useState<ICategory[]>([]);
@@ -52,6 +53,16 @@ export default function CategoriesPage() {
         } finally {
             setCreating(false);
         }
+    };
+
+    const handleDeleteCategory = async () => {
+        // Remove the deleted category from the state
+        getCategories();
+    };
+
+    const handleUpdateCategory = () => {
+        // Update the category in the state
+        getCategories();
     };
 
     if (loading) {
@@ -107,94 +118,31 @@ export default function CategoriesPage() {
                     {/* Categories Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {categories.map((category) => (
-                            <Link 
-                                key={category.id} 
-                                href={`/categories/${category.id}`}
-                                className="group"
-                            >
-                                <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden hover:border-purple-400/50 transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20 h-full flex flex-col">
-                                    {/* Thumbnail */}
-                                    <div className="aspect-video bg-gradient-to-br from-purple-600/30 to-pink-600/30 relative overflow-hidden">
-                                        {category.thumbnail ? (
-                                            <Image 
-                                                src={`${BASE_URL}${category.thumbnail}`} 
-                                                alt={category.name}
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                className="object-cover group-hover:scale-110 transition-transform duration-300"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center">
-                                                <div className="text-4xl text-white/70">🎭</div>
-                                            </div>
-                                        )}
-                                        {/* Overlay */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                    </div>
-                                    
-                                    {/* Content */}
-                                    <div className="p-6 flex-1 flex flex-col">
-                                        <h3 className="font-display text-xl font-semibold text-white mb-3 group-hover:text-purple-300 transition-colors">
-                                            {category.name}
-                                        </h3>
-                                        <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 flex-1">
-                                            {category.description}
-                                        </p>
-                                        
-                                        {/* Explore Arrow */}
-                                        <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                                            <span className="text-sm text-purple-400 font-medium">Explore</span>
-                                            <svg className="w-5 h-5 text-purple-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
+                            <CategoryCard 
+                                key={category.id}
+                                category={category}
+                                baseUrl={BASE_URL}
+                                onDelete={handleDeleteCategory}
+                                onUpdate={handleUpdateCategory}
+                            />
                         ))}
                         
                         {/* Create Category Card */}
-                        <button
-                            onClick={() => setShowCreateModal(true)}
-                            className="group cursor-pointer"
-                        >
-                            <div className="bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 border-dashed hover:border-amber-400/50 transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20 h-full flex flex-col">
-                                {/* Plus Icon Area */}
-                                <div className="aspect-video bg-gradient-to-br from-amber-600/20 to-orange-600/20 relative overflow-hidden flex items-center justify-center rounded-t-xl">
-                                    <div className="text-6xl text-amber-400/70 group-hover:text-amber-400 group-hover:scale-110 transition-all duration-300">
-                                        +
-                                    </div>
-                                    {/* Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-t-xl"></div>
-                                </div>
-                                
-                                {/* Content */}
-                                <div className="p-6 flex-1 flex flex-col">
-                                    <h3 className="font-display text-xl font-semibold text-white mb-3 group-hover:text-amber-300 transition-colors">
-                                        Create Category
-                                    </h3>
-                                    <p className="text-gray-400 text-sm leading-relaxed flex-1">
-                                        Add a new category to organize your soundtracks and create the perfect atmosphere for your campaigns.
-                                    </p>
-                                    
-                                    {/* Create Arrow */}
-                                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                                        <span className="text-sm text-amber-400 font-medium">Create</span>
-                                        <svg className="w-5 h-5 text-amber-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                        </button>
+                        <CreateCategoryCard onClick={() => setShowCreateModal(true)} />
                     </div>
                 </div>
             </div>
 
             {/* Create Category Modal */}
             {showCreateModal && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-gradient-to-br from-slate-900/95 via-purple-900/95 to-slate-900/95 backdrop-blur-md rounded-xl border border-white/20 max-w-md w-full p-6 shadow-2xl">
+                <div 
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+                    onClick={() => setShowCreateModal(false)}
+                >
+                    <div 
+                        className="bg-gradient-to-br from-slate-900/95 via-purple-900/95 to-slate-900/95 backdrop-blur-md rounded-xl border border-white/20 max-w-md w-full p-6 shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="font-display text-2xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent">Create New Category</h2>
                             <button
