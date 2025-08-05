@@ -168,7 +168,6 @@ export default function SoundtrackCard({
                                 className="text-gray-300 text-sm leading-relaxed flex-1 bg-slate-700/50 backdrop-blur-sm border border-white/10 rounded-lg px-3 py-2 focus:outline-none focus:border-amber-400/50 focus:ring-1 focus:ring-amber-400/25 transition-all resize-none"
                                 placeholder="Soundtrack description"
                                 rows={2}
-                                required
                             />
                             
                             {/* Thumbnail Input */}

@@ -6,7 +6,7 @@ export default function CreateSoundtrackCard({ onClick }: CreateSoundtrackCardPr
     return (
         <button
             onClick={onClick}
-            className="bg-black/20 backdrop-blur-sm rounded-xl border border-dashed border-green-400/50 hover:border-green-400 overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 h-full flex flex-col items-center justify-center p-6 group"
+            className="bg-black/20 backdrop-blur-sm rounded-xl border border-dashed border-green-400/50 hover:border-green-400 overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 h-full flex flex-col items-center justify-center p-6 group cursor-pointer"
         >
             {/* Plus Icon */}
             <div className="bg-green-600/20 rounded-full p-4 mb-4 group-hover:bg-green-600/30 transition-colors">
